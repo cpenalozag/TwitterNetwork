@@ -7,8 +7,10 @@ import argparse
 
 FOLLOWING_DIR = 'following'
 USER_DIR = 'twitter-users'
-MAX_FRIENDS = 5
-FRIENDS_OF_FRIENDS_LIMIT = 200
+MAX_FRIENDS = 1
+FRIENDS_OF_FRIENDS_LIMIT = 5
+COUNTRY = 'Colombia'
+MIN_FOLLOWERS = 20000
 
 # Create the directories we need
 if not os.path.exists(FOLLOWING_DIR):
@@ -65,12 +67,17 @@ def get_follower_ids(centre, max_depth=1, current_depth=0, taboo_list=[]):
 
                     d = {'name': user.name,
                          'screen_name': user.screen_name,
+                         'verified': user.verified,
+                         'description': user.description,
+                         'listed_count': user.listed_count,
+                         'statuses_count': user.statuses_count,
                          'profile_image_url': user.profile_image_url,
                          'created_at': str(user.created_at),
                          'id': user.id,
                          'friends_count': user.friends_count,
                          'followers_count': user.followers_count,
-                         'followers_ids': user.followers_ids()}
+                         'followers_ids': user.followers_ids()
+                         }
 
                     with open(userfname, 'w') as outf:
                         outf.write(json.dumps(d, indent=1))
@@ -118,8 +125,10 @@ def get_follower_ids(centre, max_depth=1, current_depth=0, taboo_list=[]):
                 while True:
                     try:
                         friend = c.next()
-                        if friend.followers_count < 5000: continue
-                        if friend.location is not None and "Colombia" not in friend.location:
+                        if friend.followers_count < MIN_FOLLOWERS or friend.location is None:
+                            continue
+
+                        if COUNTRY not in friend.location:
                             continue
 
                         friendids.append(friend.id)

@@ -19,7 +19,7 @@ for f in glob.glob('twitter-users/*.json'):
     data = json.load(file(f))
     screen_name = data['screen_name']
     users[screen_name] = {'followers': data['followers_count'], 'friends': data['friends_count'], 'id': data['id'],
-                          'follower_ids':data['followers_ids']}
+                          'follower_ids': data['followers_ids']}
     ids.append(data['id'])
 
 
