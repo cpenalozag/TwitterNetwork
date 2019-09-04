@@ -24,14 +24,11 @@ users = []
 
 def get_user_names():
     for f in glob.glob('twitter-users/*.json'):
-        print "loading " + str(f)
+        print "Loading user information"
         data = json.load(file(f))
 
         screen_name = data['screen_name']
         users.append(screen_name)
-
-
-
 
 
 def get_all_tweets(screen_name):
@@ -39,7 +36,6 @@ def get_all_tweets(screen_name):
 
     # make initial request for most recent tweets (200 is the maximum allowed count)
     new_tweets = api.user_timeline(screen_name=screen_name, count=200, tweet_mode='extended')
-    print(new_tweets[0])
     # save most recent tweets
     tweet_list.extend(new_tweets)
 
@@ -48,7 +44,6 @@ def get_all_tweets(screen_name):
 
     # keep grabbing tweets until there are no tweets left to grab
     while len(new_tweets) > 0:
-        print "getting %s tweets before %s" % (screen_name, oldest)
 
         # all subsiquent requests use the max_id param to prevent duplicates
         new_tweets = api.user_timeline(screen_name=screen_name, count=200, max_id=oldest, tweet_mode='extended')
@@ -59,34 +54,48 @@ def get_all_tweets(screen_name):
         # update the id of the oldest tweet less one
         oldest = tweet_list[-1].id - 1
 
-        print "...%s tweets downloaded so far" % (len(tweet_list))
 
-
-
-
-def write_file(tweet_list):
+def write_file():
     # Create the directories we need
     if not os.path.exists(TWEETS_DIR):
         os.makedirs(TWEETS_DIR)
 
     # write the csv
-    with open(TWEETS_DIR+'/'+'statuses.csv', 'wb') as f:
+    with open(TWEETS_DIR + '/' + 'statuses.csv', 'wb') as f:
         writer = csv.writer(f)
-        writer.writerow(["user id", "created_at", "text","favorite_count", "retweet_count", "phone", "sensitive", "hashtags", "mentions"])
+        writer.writerow(
+            ["user id", "created_at", "text", "favorite_count", "retweet_count", "phone", "sensitive", "hashtags",
+             "no_hashtags", "mentions", "no_mentions", "no_urls", "no_media"])
         # transform the tweepy tweets into a 2D array that will populate the csv
 
         outtweets = [
-            [tweet.author.id, tweet.created_at, tweet.full_text.replace('\n', ' ').encode("utf-8"), tweet.favorite_count,
-             tweet.retweet_count, tweet.source, tweet.possibly_sensitive, tweet.entities.get("hashtags"), tweet.entities.get("user_mentions")]
-                     for tweet in tweet_list if hasattr(tweet, 'possibly_sensitive')]
+            [
+                tweet.author.id, tweet.created_at, tweet.full_text.encode("utf-8").replace('\n', ' '),
+                tweet.favorite_count,
+                tweet.retweet_count, tweet.source, tweet.possibly_sensitive,
+                ';'.join([ht.get('text').encode('utf-8') for ht in tweet.entities.get('hashtags')])
+                if tweet.entities.get('hashtags') else "-",
+                len(tweet.entities.get('hashtags')),
+                [um.get('id') for um in tweet.entities.get('user_mentions')],
+                len(tweet.entities.get('user_mentions')),
+                len(tweet.entities.get('urls')) if tweet.entities.get('urls') is not None else 0,
+                len(tweet.entities.get('media')) if tweet.entities.get('media') is not None else 0
+            ]
+            for tweet in tweet_list
+            if hasattr(tweet, 'possibly_sensitive') and not tweet.retweeted and 'RT @' not in tweet.full_text]
         writer.writerows(outtweets)
 
 
 if __name__ == '__main__':
 
     get_user_names()
-    for un in users:
+
+    tweet_count = 0
+    for num, un in enumerate(users):
+        print "Collecting tweets for user %s of %s: %s" % (num+1, len(users), un)
         # initialize a list to hold all the Tweets
         tweet_list = []
-        get_all_tweets(un, tweet_list)
+        get_all_tweets(un)
+        tweet_count += len(tweet_list)
+        print "%s tweets collected so far" % tweet_count
         write_file()

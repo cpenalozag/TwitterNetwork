@@ -7,7 +7,7 @@ import argparse
 
 FOLLOWING_DIR = 'following'
 USER_DIR = 'twitter-users'
-MAX_FRIENDS = 1
+MAX_FRIENDS = 8
 FRIENDS_OF_FRIENDS_LIMIT = 5
 COUNTRY = 'Colombia'
 MIN_FOLLOWERS = 20000
@@ -65,10 +65,10 @@ def get_follower_ids(centre, max_depth=1, current_depth=0, taboo_list=[]):
                 try:
                     user = api.get_user(centre)
 
-                    d = {'name': user.name,
+                    d = {'name': user.name.encode('utf-8'),
                          'screen_name': user.screen_name,
                          'verified': user.verified,
-                         'description': user.description,
+                         'description': user.description.encode('utf-8'),
                          'listed_count': user.listed_count,
                          'statuses_count': user.statuses_count,
                          'profile_image_url': user.profile_image_url,
