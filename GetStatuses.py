@@ -1,10 +1,12 @@
-# encoding: utf-8
-
 import tweepy
 import json
 import glob
 import csv
+import sys
 import os
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 TWEETS_DIR = 'tweets'
 
@@ -21,10 +23,19 @@ api = tweepy.API(auth)
 
 users = []
 
+if not os.path.exists(TWEETS_DIR):
+    os.makedirs(TWEETS_DIR)
+
+# write the csv
+with open(TWEETS_DIR + '/' + 'statuses.csv', 'a+') as f:
+    writer = csv.writer(f)
+    writer.writerow(
+        ["id", "tweet_id", "created_at", "text", "favorite_count", "retweet_count", "phone", "sensitive", "hashtags",
+         "no_hashtags", "mentions", "no_mentions", "no_urls", "no_media"])
+
 
 def get_user_names():
     for f in glob.glob('twitter-users/*.json'):
-        print "Loading user information"
         data = json.load(file(f))
 
         screen_name = data['screen_name']
@@ -56,21 +67,15 @@ def get_all_tweets(screen_name):
 
 
 def write_file():
-    # Create the directories we need
-    if not os.path.exists(TWEETS_DIR):
-        os.makedirs(TWEETS_DIR)
-
     # write the csv
-    with open(TWEETS_DIR + '/' + 'statuses.csv', 'wb') as f:
+    with open(TWEETS_DIR + '/' + 'statuses.csv', 'a+') as f:
         writer = csv.writer(f)
-        writer.writerow(
-            ["user id", "created_at", "text", "favorite_count", "retweet_count", "phone", "sensitive", "hashtags",
-             "no_hashtags", "mentions", "no_mentions", "no_urls", "no_media"])
+
         # transform the tweepy tweets into a 2D array that will populate the csv
 
         outtweets = [
             [
-                tweet.author.id, tweet.created_at, tweet.full_text.encode("utf-8").replace('\n', ' '),
+                tweet.author.id, tweet.id, tweet.created_at, tweet.full_text.encode("utf-8").replace('\n', ' '),
                 tweet.favorite_count,
                 tweet.retweet_count, tweet.source, tweet.possibly_sensitive,
                 ';'.join([ht.get('text').encode('utf-8') for ht in tweet.entities.get('hashtags')])
@@ -88,6 +93,7 @@ def write_file():
 
 if __name__ == '__main__':
 
+    print "Loading user information"
     get_user_names()
 
     tweet_count = 0
