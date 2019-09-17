@@ -10,8 +10,10 @@ sys.setdefaultencoding('utf-8')
 
 FOLLOWING_DIR = 'following'
 USER_DIR = 'twitter-users'
+
 MAX_FRIENDS = 20
 FRIENDS_OF_FRIENDS_LIMIT = 20
+
 COUNTRY = 'Colombia'
 MIN_FOLLOWERS = 25000
 
