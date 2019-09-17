@@ -5,12 +5,15 @@ import sys
 import json
 import argparse
 
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 FOLLOWING_DIR = 'following'
 USER_DIR = 'twitter-users'
-MAX_FRIENDS = 8
-FRIENDS_OF_FRIENDS_LIMIT = 5
+MAX_FRIENDS = 20
+FRIENDS_OF_FRIENDS_LIMIT = 20
 COUNTRY = 'Colombia'
-MIN_FOLLOWERS = 20000
+MIN_FOLLOWERS = 25000
 
 # Create the directories we need
 if not os.path.exists(FOLLOWING_DIR):
