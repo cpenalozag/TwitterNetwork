@@ -11,11 +11,11 @@ sys.setdefaultencoding('utf-8')
 FOLLOWING_DIR = 'following'
 USER_DIR = 'twitter-users'
 
-MAX_FRIENDS = 20
-FRIENDS_OF_FRIENDS_LIMIT = 20
+MAX_FRIENDS = 35
+FRIENDS_OF_FRIENDS_LIMIT = 35
 
 COUNTRY = 'Colombia'
-MIN_FOLLOWERS = 25000
+MIN_FOLLOWERS = 30000
 
 # Create the directories we need
 if not os.path.exists(FOLLOWING_DIR):
@@ -73,7 +73,7 @@ def get_follower_ids(centre, max_depth=1, current_depth=0, taboo_list=[]):
                     d = {'name': user.name.encode('utf-8'),
                          'screen_name': user.screen_name,
                          'verified': user.verified,
-                         'description': user.description.encode('utf-8'),
+                         'description': user.description.encode('utf-8').replace(',',' ').replace(';',' '),
                          'listed_count': user.listed_count,
                          'statuses_count': user.statuses_count,
                          'profile_image_url': user.profile_image_url,
