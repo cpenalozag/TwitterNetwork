@@ -77,6 +77,10 @@ if not os.path.exists('network-data/vertices.csv'):
     with open('network-data/edges.csv', 'w') as outf:
         outf.write('source,target\n')
 
+else:
+    with open('network-data/edges.csv', 'a+') as outf:
+        outf.write('\n')
+
 with open('network-data/edges.csv', 'a+') as outf:
     edge_exists = {}
     for edge in edges:
