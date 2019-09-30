@@ -8,15 +8,19 @@ from collections import defaultdict
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-
 ap = argparse.ArgumentParser()
 ap.add_argument("-s", "--screen-name", required=True, help="Screen name of twitter user")
 args = vars(ap.parse_args())
 
 SEED = args['screen_name']
 
+NETWORK_DIR = 'network-data'
+
 users = defaultdict(lambda: {'followers': 0})
 ids = []
+
+if not os.path.exists(NETWORK_DIR):
+    os.makedirs(NETWORK_DIR)
 
 for f in glob.glob('twitter-users/*.json'):
     print "loading " + str(f)
@@ -58,16 +62,22 @@ for user in users:
         if id in ids:
             edges.append([id, users[user]['id']])
 
-with open('network-data/vertices.csv', 'w') as outf:
-    outf.write('id,screen_name,followers,friends,verified,description,created_at,listed\n')
+if not os.path.exists('network-data/vertices.csv'):
+    with open('network-data/vertices.csv', 'w') as outf:
+        outf.write('id,screen_name,followers,friends,verified,description,created_at,listed\n')
+
+with open('network-data/vertices.csv', 'a+') as outf:
     for user in users:
         outf.write(
             '%d,%s,%d,%d,%s,%s,%s,%s\n' % (users[user]['id'], user, users[user]['followers'], users[user]['friends'],
                                            users[user]['verified'], users[user]['description'].replace(',',';'),
                                            users[user]['created_at'], users[user]['listed_count']))
 
-with open('network-data/edges.csv', 'w') as outf:
-    outf.write('source,target\n')
+if not os.path.exists('network-data/vertices.csv'):
+    with open('network-data/edges.csv', 'w') as outf:
+        outf.write('source,target\n')
+
+with open('network-data/edges.csv', 'a+') as outf:
     edge_exists = {}
     for edge in edges:
         key = ','.join([str(x) for x in edge])

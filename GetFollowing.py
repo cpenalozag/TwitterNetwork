@@ -130,10 +130,11 @@ def get_follower_ids(centre, max_depth=1, current_depth=0, taboo_list=[]):
                 while True:
                     try:
                         friend = c.next()
-                        if friend.followers_count < MIN_FOLLOWERS or friend.location is None:
+                        if friend.followers_count < MIN_FOLLOWERS:
                             continue
 
-                        if COUNTRY not in friend.location:
+                        if friend.location is not None and COUNTRY not in friend.location \
+                                and COUNTRY.lower() not in friend.description.lower():
                             continue
 
                         friendids.append(friend.id)
