@@ -9,6 +9,7 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 TWEETS_DIR = 'tweets'
+LIMIT = 1000
 
 # Twitter API credentials
 CONSUMER_KEY = os.getenv('CONSUMER_KEY')
@@ -48,16 +49,20 @@ def get_all_tweets(screen_name):
     # make initial request for most recent tweets (200 is the maximum allowed count)
     new_tweets = api.user_timeline(screen_name=screen_name, count=200, tweet_mode='extended')
     # save most recent tweets
-    tweet_list.extend(new_tweets)
+    # tweet_list.extend(new_tweets)
 
     # save the id of the oldest tweet less one
     oldest = tweet_list[-1].id - 1
 
+    user_count = 0
     # keep grabbing tweets until there are no tweets left to grab
-    while len(new_tweets) > 0:
+    while len(new_tweets) > 0 and user_count<LIMIT:
 
         # all subsiquent requests use the max_id param to prevent duplicates
         new_tweets = api.user_timeline(screen_name=screen_name, count=200, max_id=oldest, tweet_mode='extended')
+
+        # update user tweets count
+        user_count += len(new_tweets)
 
         # save most recent tweets
         tweet_list.extend(new_tweets)
