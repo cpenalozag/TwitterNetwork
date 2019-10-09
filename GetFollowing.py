@@ -11,11 +11,11 @@ sys.setdefaultencoding('utf-8')
 FOLLOWING_DIR = 'following'
 USER_DIR = 'twitter-users'
 
-MAX_FRIENDS = 35
-FRIENDS_OF_FRIENDS_LIMIT = 35
+MAX_FRIENDS = 15
+FRIENDS_OF_FRIENDS_LIMIT = 15
 
 COUNTRY = 'Colombia'
-MIN_FOLLOWERS = 30000
+MIN_FOLLOWERS = 50000
 
 # Create the directories we need
 if not os.path.exists(FOLLOWING_DIR):
