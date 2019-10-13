@@ -73,13 +73,9 @@ with open('network-data/vertices.csv', 'a+') as outf:
                                            users[user]['verified'], users[user]['description'].replace(',',';'),
                                            users[user]['created_at'], users[user]['listed_count']))
 
-if not os.path.exists('network-data/vertices.csv'):
+if not os.path.exists('network-data/edges.csv'):
     with open('network-data/edges.csv', 'w') as outf:
         outf.write('source,target\n')
-
-else:
-    with open('network-data/edges.csv', 'a+') as outf:
-        outf.write('\n')
 
 with open('network-data/edges.csv', 'a+') as outf:
     edge_exists = {}
