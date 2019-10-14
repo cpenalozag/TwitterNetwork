@@ -9,7 +9,7 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 TWEETS_DIR = 'tweets'
-LIMIT = 1000
+LIMIT = 200
 
 # Twitter API credentials
 CONSUMER_KEY = os.getenv('CONSUMER_KEY')
