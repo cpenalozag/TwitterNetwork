@@ -69,7 +69,10 @@ def get_all_tweets(screen_name):
         tweet_list.extend(new_tweets)
 
         # update the id of the oldest tweet less one
-        oldest = tweet_list[-1].id - 1
+        if len(tweet_list)>0:
+            oldest = tweet_list[-1].id - 1
+        else:
+            break
 
 
 def write_file():
