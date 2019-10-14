@@ -48,8 +48,16 @@ def get_all_tweets(screen_name):
     # Twitter only allows access to a users most recent 3240 tweets with this method
 
     # make initial request for most recent tweets (200 is the maximum allowed count)
+    try:
+        new_tweets = api.user_timeline(screen_name=screen_name, count=200, tweet_mode='extended')
+    except tweepy.TweepError, error:
+        errorObj = error[0][0]
 
-    new_tweets = api.user_timeline(screen_name=screen_name, count=200, tweet_mode='extended')
+        if errorObj['message'] == 'Rate limit exceeded':
+            print 'Rate limited. Sleeping for 15 minutes.'
+            time.sleep(15 * 60 + 15)
+            return get_all_tweets(screen_name)
+
 
     recent = []
     recent.extend(new_tweets)
@@ -121,7 +129,7 @@ if __name__ == '__main__':
         # initialize a list to hold all the Tweets
         tweet_list = []
         get_all_tweets(un)
+        time.sleep(2)
         tweet_count += len(tweet_list)
         print "%s tweets collected so far" % tweet_count
-        time.sleep(5)
         write_file()
