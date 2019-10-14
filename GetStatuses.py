@@ -1,6 +1,7 @@
 import tweepy
 import json
 import glob
+import time
 import csv
 import sys
 import os
@@ -58,21 +59,29 @@ def get_all_tweets(screen_name):
     user_count = 0
     # keep grabbing tweets until there are no tweets left to grab
     while len(new_tweets) > 0 and user_count<LIMIT:
+        try:
+            # all subsiquent requests use the max_id param to prevent duplicates
+            new_tweets = api.user_timeline(screen_name=screen_name, count=200, max_id=oldest, tweet_mode='extended')
 
-        # all subsiquent requests use the max_id param to prevent duplicates
-        new_tweets = api.user_timeline(screen_name=screen_name, count=200, max_id=oldest, tweet_mode='extended')
+            # update user tweets count
+            user_count += len(new_tweets)
 
-        # update user tweets count
-        user_count += len(new_tweets)
+            # save most recent tweets
+            tweet_list.extend(new_tweets)
 
-        # save most recent tweets
-        tweet_list.extend(new_tweets)
+            # update the id of the oldest tweet less one
+            if len(tweet_list) > 0:
+                oldest = tweet_list[-1].id - 1
+            else:
+                break
 
-        # update the id of the oldest tweet less one
-        if len(tweet_list)>0:
-            oldest = tweet_list[-1].id - 1
-        else:
-            break
+        except tweepy.TweepError, error:
+            errorObj = error[0][0]
+
+            if errorObj['message'] == 'Rate limit exceeded':
+                print 'Rate limited. Sleeping for 15 minutes.'
+                time.sleep(15 * 60 + 15)
+                continue
 
 
 def write_file():
