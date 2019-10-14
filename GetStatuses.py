@@ -48,11 +48,12 @@ def get_all_tweets(screen_name):
 
     # make initial request for most recent tweets (200 is the maximum allowed count)
     new_tweets = api.user_timeline(screen_name=screen_name, count=200, tweet_mode='extended')
-    # save most recent tweets
-    # tweet_list.extend(new_tweets)
+
+    recent = []
+    recent.extend(new_tweets)
 
     # save the id of the oldest tweet less one
-    oldest = tweet_list[-1].id - 1
+    oldest = recent[-1].id - 1
 
     user_count = 0
     # keep grabbing tweets until there are no tweets left to grab
