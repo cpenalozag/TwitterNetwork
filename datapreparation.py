@@ -11,17 +11,22 @@ import nltk
 nltk.download('punkt')
 
 from nltk.tokenize import word_tokenize
+import matplotlib.pyplot as plt
 from collections import Counter
 from textblob import TextBlob
 from bs4 import BeautifulSoup
+import matplotlib.cm as cm
 from string import punctuation
 from string import digits
 import urllib.request
 import networkx as nx
 import pandas as pd
+import itertools
 import emoji
+import math
 import time
 import json
+import sys
 import re
 
 # TODO: remove this when NetworkX is fixed
@@ -136,7 +141,7 @@ def process_text(text, word_counts):
           sentiment = eng.sentiment     
           polarity = sentiment.polarity
           subjectivity = sentiment.subjectivity
-          time.sleep(.5)
+          time.sleep(.4)
       except:
           print('Error')
           polarity = 0.0
@@ -256,32 +261,27 @@ analysis_results = pd.DataFrame(text_analysis[1:])
 analysis_results.columns = text_analysis[0]
 analysis_results["id"] = pd.to_numeric(analysis_results["id"])
 analysis_results.to_csv('analysis_results.csv', index=False)
-analysis_results.head()
 
 user_network_data=pd.read_csv('https://raw.githubusercontent.com/cpenalozag/twitter_network/master/network-data/user_network_data.csv')
-user_network_data.head()
 
 # Create vertex data frame
 vertices = pd.read_csv('https://raw.githubusercontent.com/cpenalozag/twitter_network/master/network-data/vertices.csv', encoding='utf-8', engine='c')
 vertices["id"] = pd.to_numeric(vertices["id"])
 vertices = vertices.drop(['description'], axis=1)
-vertices.head()
 
 # Merge all user info
 
 user_engagement = pd.DataFrame(avg_eng[1:])
 user_engagement.columns = avg_eng[0]
-user_engagement.head()
 
 user_info = pd.merge(user_network_data, vertices, on='id')
 user_info = pd.merge(user_info, user_engagement, on='id')
-user_info.head()
 
 user_info.to_csv('user_info.csv', index=False)
 
 # Merge user and tweet data
 processed_data = pd.merge(user_info, analysis_results, on='id')
-processed_data.head(n=10)
+processed_data = pd.merge(processed_data, tweets, on='id')
 
 # Write processed data to file
 processed_data.to_csv('processed_data.csv', index=False)
