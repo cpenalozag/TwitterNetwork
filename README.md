@@ -97,4 +97,4 @@ Run jupyter notebooks with the command:
     
 Open the `Graph.ipynb` notebook and run it.
 
-![Sample graph](network-data/graph.png)
+![Sample graph](network-data/network.png)
