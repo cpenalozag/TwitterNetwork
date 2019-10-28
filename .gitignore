@@ -2,3 +2,6 @@
 venv/
 .ipynb_checkpoints/
 __pycache__/
+TwitterEngagement/.meteor/
+TwitterEngagement/node_modules/
+
