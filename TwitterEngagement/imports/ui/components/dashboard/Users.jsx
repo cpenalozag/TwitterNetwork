@@ -43,6 +43,7 @@ class Users extends Component {
                 <tr key={user._id}>
                     <td style={{backgroundColor: this.pColors[user.partition], opacity:0.9}}></td>
                     <td>{user.screen_name}</td>
+                    <td className="verified-td">{user.verified?<img src="images/verified.png" className="verified" alt="Verified icon"/>:"-"}</td>
                     <td>{user.followers}</td>
                     <td>{this.capitalizeFirstLetter(user.type)}</td>
                     <td><input type="checkbox" onChange={this.handleSelected} name={`${user._id}`} checked/></td>
@@ -93,6 +94,7 @@ class Users extends Component {
                                 <tr>
                                     <th>Class</th>
                                     <th>Screen name</th>
+                                    <th>Verified</th>
                                     <th>Followers</th>
                                     <th>Category</th>
                                     <th>Selected</th>
@@ -101,7 +103,8 @@ class Users extends Component {
                                 </tbody>
                             </table>
                             <hr/>
-                            <p>Size of the different classes:</p>
+                            <h4>Class Sizes</h4>
+                            <p>Ideally, you should aim to select users in different classes to reach a larger amount of end users.</p>
                             <div className="row">
                                 <div className="col-md-3 mx-auto">
                                     <table className="table table-bordered">

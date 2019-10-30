@@ -2234,3 +2234,13 @@ table {
 .red {
     color: red;
 }
+.verified {
+    display: block;
+    max-width: 40%;
+    margin: auto;
+}
+.verified-td {
+    width:4px;
+    text-align:center;
+    vertical-align:middle;
+}
