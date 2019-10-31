@@ -52,23 +52,8 @@ def get_all_tweets(screen_name):
     try:
         new_tweets = api.user_timeline(screen_name=screen_name, count=20, tweet_mode='extended')
     except tweepy.TweepError, error:
-        print type(error)
         print str(error)
-
-        if str(error) == 'Not authorized.':
-            print 'Can''t access user data - not authorized.'
-            return
-
-        if str(error) == 'User has been suspended.':
-            print 'User suspended.'
-            return
-
-        errorObj = error[0][0]
-
-        if errorObj['message'] == 'Rate limit exceeded':
-            print 'Rate limited. Sleeping for 15 minutes.'
-            time.sleep(15 * 60 + 15)
-            new_tweets = api.user_timeline(screen_name=screen_name, count=20, tweet_mode='extended')
+        return
 
     if len(new_tweets) == 0:
         return
@@ -99,22 +84,8 @@ def get_all_tweets(screen_name):
                 break
 
         except tweepy.TweepError, error:
-            print type(error)
-
-            if str(error) == 'Not authorized.':
-                print 'Can''t access user data - not authorized.'
-                return
-
-            if str(error) == 'User has been suspended.':
-                print 'User suspended.'
-                return
-
-            errorObj = error[0][0]
-
-            if errorObj['message'] == 'Rate limit exceeded':
-                print 'Rate limited. Sleeping for 15 minutes.'
-                time.sleep(15 * 60 + 15)
-                continue
+            print str(error)
+            return
 
 
 def write_file():
