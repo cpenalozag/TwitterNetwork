@@ -10,6 +10,7 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 TWEETS_DIR = 'tweets'
+FILE_NAME = 'statusess.csv'
 LIMIT = 2000
 
 # Twitter API credentials
@@ -29,7 +30,7 @@ if not os.path.exists(TWEETS_DIR):
     os.makedirs(TWEETS_DIR)
 
 # write the csv
-with open(TWEETS_DIR + '/' + 'statuses.csv', 'a+') as f:
+with open(TWEETS_DIR + '/' + FILE_NAME, 'a+') as f:
     writer = csv.writer(f)
     writer.writerow(
         ["id", "tweet_id", "created_at", "text", "favorite_count", "retweet_count", "phone", "sensitive", "hashtags",
@@ -46,17 +47,31 @@ def get_user_names():
 
 def get_all_tweets(screen_name):
     # Twitter only allows access to a users most recent 3240 tweets with this method
-
+    new_tweets = []
     # make initial request for most recent tweets
     try:
         new_tweets = api.user_timeline(screen_name=screen_name, count=20, tweet_mode='extended')
     except tweepy.TweepError, error:
+        print type(error)
+        print str(error)
+
+        if str(error) == 'Not authorized.':
+            print 'Can''t access user data - not authorized.'
+            return
+
+        if str(error) == 'User has been suspended.':
+            print 'User suspended.'
+            return
+
         errorObj = error[0][0]
 
         if errorObj['message'] == 'Rate limit exceeded':
             print 'Rate limited. Sleeping for 15 minutes.'
             time.sleep(15 * 60 + 15)
             new_tweets = api.user_timeline(screen_name=screen_name, count=20, tweet_mode='extended')
+
+    if len(new_tweets) == 0:
+        return
 
     recent = []
     recent.extend(new_tweets)
@@ -84,6 +99,16 @@ def get_all_tweets(screen_name):
                 break
 
         except tweepy.TweepError, error:
+            print type(error)
+
+            if str(error) == 'Not authorized.':
+                print 'Can''t access user data - not authorized.'
+                return
+
+            if str(error) == 'User has been suspended.':
+                print 'User suspended.'
+                return
+
             errorObj = error[0][0]
 
             if errorObj['message'] == 'Rate limit exceeded':
@@ -94,7 +119,7 @@ def get_all_tweets(screen_name):
 
 def write_file():
     # write the csv
-    with open(TWEETS_DIR + '/' + 'statuses.csv', 'a+') as f:
+    with open(TWEETS_DIR + '/' + FILE_NAME, 'a+') as f:
         writer = csv.writer(f)
 
         # transform the tweepy tweets into a 2D array that will populate the csv
