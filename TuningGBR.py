@@ -3,7 +3,7 @@
 from sklearn.linear_model import BayesianRidge, LinearRegression, LassoCV, RidgeCV, ElasticNetCV
 from sklearn.model_selection import train_test_split,cross_val_score, cross_val_predict
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
-from sklearn.metrics import mean_absolute_error, r2_score, make_scorer
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score, make_scorer
 from sklearn.feature_selection import SelectFromModel
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsRegressor
