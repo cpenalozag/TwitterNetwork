@@ -208,7 +208,6 @@ def predict():
         result_list.append((row['id'], model.predict(entry)[0]))
 
     result_list.sort(key=lambda tup: tup[1], reverse=True)
-    print(result_list)
     return jsonify({'results': result_list[:20]})
 
 
