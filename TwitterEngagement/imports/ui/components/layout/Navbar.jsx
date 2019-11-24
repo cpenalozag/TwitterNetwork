@@ -92,7 +92,7 @@ class Navbar extends Component {
                         <div className="content">
                             <Switch>
                                 <Route exact path="/"
-                                       render={(props) => <Dashboard {...props}/>}/>
+                                       render={(props) => <Dashboard users={this.props.users} {...props}/>}/>
                                 <Route exact path="/users"
                                        render={(props) => <Users users={this.props.users} {...props}/>}/>
                                 <Route exact path="/about"

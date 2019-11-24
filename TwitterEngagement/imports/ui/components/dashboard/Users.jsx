@@ -8,11 +8,11 @@ class Users extends Component {
 
         this.pColors = [
             "#FF0000",
-            "#FF6600",
-            "#FFDA00",
-            "#00cd00",
             "#00A4E4",
+            "#FF6600",
+            "#00cd00",
             "#6A737B",
+            "#FFDA00",
             "#FF0065",
             "#800080",
             "#2E282A"
@@ -104,9 +104,14 @@ class Users extends Component {
                             </table>
                             <hr/>
                             <h4>Class Sizes</h4>
-                            <p>Ideally, you should aim to select users in different classes to reach a larger amount of end users.</p>
+                            <p>You should select users in different classes to reach a larger amount of end users.</p>
                             <div className="row">
-                                <div className="col-md-3 mx-auto">
+                                <div className="col-md-9">
+                                    <img src="images/network2.png" alt="Network" className="sm-network-image"/>
+                                </div>
+                                <div className="col-md-3">
+                                    <br/>
+                                    <br/>
                                     <table className="table table-bordered">
                                         <tbody>
                                         <tr>
