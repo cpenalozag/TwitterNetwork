@@ -7,8 +7,8 @@ class Dashboard extends Component {
         this.max_chars = 280;
         this.state = {
             text: '',
-            media:'DEFAULT',
-            time:'DEFAULT',
+            media: 'DEFAULT',
+            time: 'DEFAULT',
             button_disabled: true,
             chars_left: this.max_chars,
             results: []
@@ -35,11 +35,15 @@ class Dashboard extends Component {
     }
 
     handleChangeTime(event) {
-        this.setState({time: event.target.value}, () => { this.check_button() });
+        this.setState({time: event.target.value}, () => {
+            this.check_button()
+        });
     }
 
     handleChangeMedia(event) {
-        this.setState({media: event.target.value}, () => { this.check_button() });
+        this.setState({media: event.target.value}, () => {
+            this.check_button()
+        });
     }
 
     capitalizeFirstLetter(string) {
@@ -55,10 +59,12 @@ class Dashboard extends Component {
                 <tr key={id}>
                     <td>{user.screen_name}</td>
                     <td>{score}</td>
-                    <td className="verified-td">{user.verified?<img src="images/verified.png" className="verified" alt="Verified icon"/>:"-"}</td>
+                    <td className="verified-td">{user.verified ?
+                        <img src="images/verified.png" className="verified" alt="Verified icon"/> : "-"}</td>
                     <td>{user.followers}</td>
                     <td>{this.capitalizeFirstLetter(user.type)}</td>
-                    <td><input type="checkbox" checked={user.selected?true:false} onChange={this.handleSelected} name={`${user._id}`}/></td>
+                    <td><input type="checkbox" checked={user.selected ? true : false} onChange={this.handleSelected}
+                               name={`${user._id}`}/></td>
 
                 </tr>
             )
@@ -82,7 +88,7 @@ class Dashboard extends Component {
     }
 
     check_button() {
-        if (this.state.media!='DEFAULT' && this.state.time!='DEFAULT') {
+        if (this.state.media != 'DEFAULT' && this.state.time != 'DEFAULT') {
             this.setState({button_disabled: false});
         }
     }
@@ -94,19 +100,25 @@ class Dashboard extends Component {
                     <div className="content">
                         <div className="card-header ">
                             <h4 className="card-title">Search users for your campaign</h4>
-                            <p>Insert the text you want to post to Twitter. The search will find the best users to post it!</p>
+                            <p>Insert the text you want to post to Twitter. The search will find the best users to post
+                                it!</p>
                         </div>
                         <hr/>
                         <div className="card-body ">
                             <p>Tweet message:</p>
-                            <textarea onChange={this.handleChange.bind(this)} name="tweet-text" cols="40" className="text-input" rows="4"></textarea>
-                            <p className={`chars-left ${this.state.chars_left<0?"red":""}`}>Characters Left: {this.state.chars_left}</p>
+                            <textarea onChange={this.handleChange.bind(this)} name="tweet-text" cols="40"
+                                      className="text-input" rows="4"></textarea>
+                            <p className={`chars-left ${this.state.chars_left < 0 ? "red" : ""}`}>Characters
+                                Left: {this.state.chars_left}</p>
                         </div>
                         <div className="card-body">
                             <div className="row">
                                 <div className="col">
-                                    <select className="browser-default custom-select" value={this.state.time} onChange={this.handleChangeTime}>
-                                        <option value="DEFAULT" disabled>Select the time of day the tweet will be posted</option>
+                                    <select className="browser-default custom-select" value={this.state.time}
+                                            onChange={this.handleChangeTime}>
+                                        <option value="DEFAULT" disabled>Select the time of day the tweet will be
+                                            posted
+                                        </option>
                                         <option value="early morning">Early morning (12:00 AM – 5:00 AM)</option>
                                         <option value="morning">Morning (5:00 AM – 11:00 AM)</option>
                                         <option value="noon">Noon (11:00 AM – 12:00 PM)</option>
@@ -116,8 +128,11 @@ class Dashboard extends Component {
                                     </select>
                                 </div>
                                 <div className="col">
-                                    <select className="browser-default custom-select" value={this.state.media} onChange={this.handleChangeMedia}>
-                                        <option value="DEFAULT" disabled>Select the number of media items (images, gifs, etc) in the tweet</option>
+                                    <select className="browser-default custom-select" value={this.state.media}
+                                            onChange={this.handleChangeMedia}>
+                                        <option value="DEFAULT" disabled>Select the number of media items (images, gifs,
+                                            etc) in the tweet
+                                        </option>
                                         <option value="0">0</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
@@ -129,7 +144,9 @@ class Dashboard extends Component {
                         </div>
                         <div className="row">
                             <div className="col-md-2 mx-auto">
-                                <input className={`btn btn-primary`} disabled={this.state.button_disabled ? true:false} type="submit" value="Search" onClick={this.handleSearch} />
+                                <input className={`btn btn-primary`}
+                                       disabled={this.state.button_disabled ? true : false} type="submit" value="Search"
+                                       onClick={this.handleSearch}/>
                             </div>
                         </div>
                     </div>
@@ -142,14 +159,17 @@ class Dashboard extends Component {
                         <div className="card-body ">
                             <table className="table table-bordered">
                                 <tbody>
-                                <tr>
-                                    <th>Screen name</th>
-                                    <th>Predicted engagement</th>
-                                    <th>Verified</th>
-                                    <th>Followers</th>
-                                    <th>Category</th>
-                                    <th>Selected</th>
-                                </tr>
+                                {this.state.results.length > 0 ?
+                                    <tr>
+                                        <th>Screen name</th>
+                                        <th>Predicted engagement</th>
+                                        <th>Verified</th>
+                                        <th>Followers</th>
+                                        <th>Category</th>
+                                        <th>Selected</th>
+                                    </tr>
+                                    : <tr><th>Search to find the top users to post your message!</th></tr>
+                                }
                                 {this.renderUsers()}
                                 </tbody>
                             </table>

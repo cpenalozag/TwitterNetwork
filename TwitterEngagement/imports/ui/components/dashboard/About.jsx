@@ -42,7 +42,11 @@ class About extends Component {
                                 are:</p>
                             <ol>
                                 <li>Go to the search tab</li>
-                                <li>Type the message you want to post</li>
+                                <li>Type the message you want to post, specify the time for posting and number of media
+                                    items
+                                </li>
+                                <li>Click the Search button</li>
+                                <li>Select the users that you like the most from the results list</li>
                             </ol>
                         </div>
                     </div>
@@ -53,6 +57,8 @@ class About extends Component {
                             <h4 className="card-title">The Network</h4>
                         </div>
                         <div className="card-body ">
+                            <p>The following diagram shows the network of influential users gathered to train the
+                                predictive model. </p>
                             <Network/>
                         </div>
                     </div>
