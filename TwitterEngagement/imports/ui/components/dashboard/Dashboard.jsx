@@ -11,7 +11,8 @@ class Dashboard extends Component {
             time: 'DEFAULT',
             button_disabled: true,
             chars_left: this.max_chars,
-            results: []
+            results: [],
+            loading: false
         };
         this.handleSearch = this.handleSearch.bind(this);
         this.check_button = this.check_button.bind(this);
@@ -58,7 +59,7 @@ class Dashboard extends Component {
             return (
                 <tr key={id}>
                     <td>{user.screen_name}</td>
-                    <td>{score}</td>
+                    <td>{score.toFixed(3)}</td>
                     <td className="verified-td">{user.verified ?
                         <img src="images/verified.png" className="verified" alt="Verified icon"/> : "-"}</td>
                     <td>{user.followers}</td>
@@ -72,19 +73,22 @@ class Dashboard extends Component {
     }
 
     handleSearch() {
-        (async () => {
-            const rawResponse = await fetch('http://localhost:8080/predict', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({text: this.state.text, media: this.state.media, time: this.state.time})
-            });
-            const content = await rawResponse.json();
+        this.setState({loading: true},()=>{
+            (async () => {
+                const rawResponse = await fetch('http://localhost:8080/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({text: this.state.text, media: this.state.media, time: this.state.time})
+                });
+                const content = await rawResponse.json();
 
-            this.setState({results: content.results});
-        })();
+                this.setState({results: content.results, loading:false});
+            })();
+        });
+
     }
 
     check_button() {
@@ -114,10 +118,10 @@ class Dashboard extends Component {
                         <div className="card-body">
                             <div className="row">
                                 <div className="col">
+                                    <p>Time of day the tweet will be posted:</p>
                                     <select className="browser-default custom-select" value={this.state.time}
                                             onChange={this.handleChangeTime}>
-                                        <option value="DEFAULT" disabled>Select the time of day the tweet will be
-                                            posted
+                                        <option value="DEFAULT" disabled>Time of publication
                                         </option>
                                         <option value="early morning">Early morning (12:00 AM – 5:00 AM)</option>
                                         <option value="morning">Morning (5:00 AM – 11:00 AM)</option>
@@ -128,10 +132,10 @@ class Dashboard extends Component {
                                     </select>
                                 </div>
                                 <div className="col">
+                                    <p>Number of media items (images, gifs, etc.) in the tweet:</p>
                                     <select className="browser-default custom-select" value={this.state.media}
                                             onChange={this.handleChangeMedia}>
-                                        <option value="DEFAULT" disabled>Select the number of media items (images, gifs,
-                                            etc) in the tweet
+                                        <option value="DEFAULT" disabled>Number of media items
                                         </option>
                                         <option value="0">0</option>
                                         <option value="1">1</option>
@@ -144,9 +148,12 @@ class Dashboard extends Component {
                         </div>
                         <div className="row">
                             <div className="col-md-2 mx-auto">
-                                <input className={`btn btn-primary`}
-                                       disabled={this.state.button_disabled ? true : false} type="submit" value="Search"
-                                       onClick={this.handleSearch}/>
+                                <button className={`btn btn-primary`}
+                                       disabled={this.state.button_disabled} type="submit"
+                                       onClick={this.handleSearch}>
+                                    {this.state.loading ? <i className={"fa fa-spinner fa-spin"}></i>:"Find users"}
+                                </button>
+
                             </div>
                         </div>
                     </div>
